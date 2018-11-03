@@ -5,11 +5,14 @@
 Module: dspipeline.py
 Author: zlamberty
 Created: 2018-10-19
+
 Description:
     simple data science pipeline functions and a demo which uses these tools to
     model a freely available dataset
+
 Usage:
     <usage>
+
 """
 
 import argparse
@@ -89,10 +92,13 @@ def fix_column_names(df):
 
 def my_cv(N=10):
     """factory for creating my prefered cross validation object
+
     args:
         N (int): the number of folds in our bootstrapping cross validation
+
     returns
         sklearn.model_selection.StratifiedShuffleSplit: the cv object
+
     """
     return sklearn.model_selection.StratifiedShuffleSplit(
         n_splits=N,
@@ -103,14 +109,17 @@ def my_cv(N=10):
 
 def cross_validate_scores(pipelines, X, y, cv=None):
     """given an iterable of pipelines, perform cross-validated scoring
+
     args:
         pipelines (iterable): a list or iterable of sklearn pipelines
         X (nd.array): observed predictors
         y (nd.array): observed targets
         cv (sklearn.model_selection object): a scikit learn cross validation
             object. if `None`, will default to the value defined by `my_cv`
+
     returns
         pd.DataFrame: dataframe of score information
+
     raises:
         None
     """
@@ -156,18 +165,23 @@ def cross_validate_scores(pipelines, X, y, cv=None):
 
 def feature_importance_df(clf, feature_names):
     """create a pandas dataframe of feature importance values
+
     the scikit learn estimator object `clf` must have a `get_support` method and
     an `estimator_` attribute with a `feature_importances_` attribute (i.e. both
     `clf.get_support()` and `clf.estimator_.feature_importances_` must be
     defined)
+
     args:
          clf (scikit-learn model object): the scikit learn modelling object
               which has estimated feature importance information
          feature_names (list): a list of feature names for the input columns
+
     returns:
          pd.DataFrame: dataframe containing feature importance and support info
+
     raises:
          None
+
     """
     df_support = pd.DataFrame({
         'feature': feature_names,
@@ -186,15 +200,19 @@ def feature_importance_df(clf, feature_names):
 
 def feature_importance_plot(df_support, height=1200, margin=250):
     """create a plotly barchart showing feature importance values
+
     args:
          df_support (pd.DataFrame): a dataframe containing support information.
              must have the columns `feature`, `support`, and `importance`
          height (int): height of plotly.graph_objs.Layout object (default: 1200)
          margin (int): margin of plotly.graph_objs.Layout object (default: 250)
+
     returns:
          plotly.Figure: the plotly figure object which was plotted
+
     raises:
          None
+
     """
     # drop the features which weren't chosen, and invert the sort  order (plotly
     # adds bars in this "top to bottom" way for  horizontal bar charts)
@@ -216,11 +234,13 @@ def feature_importance_plot(df_support, height=1200, margin=250):
 def get_ccr_df(clf, X, y):
     """calculate cumulative capture rate values given a predictor object and
     observed X and y values
+
     args:
          clf (scikit-learn model object): the scikit learn modelling object
               which has a predict_proba method
          X (np.array-like): observed predictors
          y (np.array-like): observed targets
+
     """
     y_pred = clf.predict_proba(X)
 
@@ -248,12 +268,15 @@ def get_ccr_df(clf, X, y):
 
 def make_ccr_plot(df_ccr):
     """create a plotly plot of ccr values
+
     args:
         df_ccr (pd.DataFrame): a pandas data frame containing ccr values.
             assumes columns named `y_obs`, `y_pred`, `ccr`, `x`, `perfect`, and
             `random`
+
     returns:
         plotly.graph_objs.Figure: the plotly figure object
+
     """
     data = [
         # our capture rate
@@ -311,11 +334,14 @@ def make_ccr_plot(df_ccr):
 
 def load_adult_income_data(test_size=0.2, random_state=1337):
     """load a UCI dataset on adult income
+
     the adult income dataset is available as part of the [UCI machine learning
     repository](http://archive.ics.uci.edu/ml/index.php).
+
     we *could* use the requests library to download and parse the column names
     (available [here](http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names)),
     but instead I've just hard-coded them below.
+
     also, we *could* use the pre-segregated train and test data sets as our
     train and test, but that would involve some data munging and cleaning that
     is a bit of a mess, and also results in enough data points in our final
@@ -323,16 +349,20 @@ def load_adult_income_data(test_size=0.2, random_state=1337):
     instead, let's pull only the smaller training dataset, and use the
     `scikit-learn` train / test split function to create a test dataset of our
     own.
+
     args:
         test_size (float): passed to the sklearn train_test_split function to
             determine the fractional size of the test set (default: 0.20)
         random_state (int): passed to the sklearn train_test_split function to
             set the random number generator seed (default: 0.20)
+
     returns:
         xtrain (np.array): train predictors
         xtest (np.array): test predictors
         ytrain (np.array): train target
         ytest (np.array): test target
+
+
     """
     LOGGER.info('downloading adult data set')
     columns = [
@@ -545,7 +575,6 @@ def adult_data_demo():
     # re-fit this model to the *entire* train data (it has only ever been fitted
     # to bootstrapped sub-samples)
     p_best.fit(xtrain, ytrain)
-
 
     # get ccr values on test data
     df_ccr = get_ccr_df(p_best, xtest, ytest)
