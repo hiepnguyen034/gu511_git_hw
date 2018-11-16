@@ -2,6 +2,30 @@
 
 the primary function of this repo is to develop `git` skills over the course of the year.
 
+
+## environment
+
+the neighboring `requirements.txt` and `environment.linux.yaml` files are available for you to build `python` environments that are required for you to execute the code discussed below.
+
+you can install into an existing environment with
+
+``` sh
+conda install --file requirements.txt
+```
+
+or
+
+``` sh
+pip install -r requirements.txt
+```
+
+furthermore, if you are on a `linux` system you could create a new environment from scratch with
+
+``` sh
+conda env create -f environment.linux.yml
+```
+
+
 ## repository contents
 
 + `helloworld.py`
@@ -12,3 +36,4 @@ the primary function of this repo is to develop `git` skills over the course of 
     + this will offer you the ramblings of a teacher who thinks he is funnier than he is
 + `dspipeline.py`
     + a file containing some utilities for building data science pipelines, and an example that trains several models on adult salary data and selects the best based on cross validated metrics
+
